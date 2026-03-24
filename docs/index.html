@@ -1,0 +1,1690 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgentWay Study Guide — Agentic AI</title>
+    <style>
+      :root {
+        --bg: #0e0f11;
+        --bg2: #161719;
+        --bg3: #1e2023;
+        --border: rgba(255, 255, 255, 0.08);
+        --border2: rgba(255, 255, 255, 0.15);
+        --text: #e8e6df;
+        --muted: #8a8880;
+        --accent: #7c6af5;
+        --accent2: #4ec9b0;
+        --accent3: #f4a04a;
+        --accent4: #e85d6a;
+        --tag-bg: rgba(124, 106, 245, 0.12);
+        --tag-border: rgba(124, 106, 245, 0.3);
+        --done-bg: rgba(78, 201, 176, 0.1);
+        --done-border: rgba(78, 201, 176, 0.3);
+        --code-bg: #0a0b0d;
+        --font: "Segoe UI", system-ui, sans-serif;
+        --mono: "Fira Code", "Cascadia Code", monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 15px;
+        line-height: 1.65;
+        min-height: 100vh;
+      }
+
+      /* Sidebar + main layout */
+      .layout {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background: var(--bg2);
+        border-right: 1px solid var(--border);
+        padding: 24px 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        scrollbar-width: thin;
+      }
+      .sidebar-title {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding: 0 20px 12px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 20px;
+        cursor: pointer;
+        font-size: 13.5px;
+        color: var(--muted);
+        border-left: 2px solid transparent;
+        transition: all 0.15s;
+      }
+      .nav-item:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .nav-item.active {
+        color: var(--text);
+        border-left-color: var(--accent);
+        background: rgba(124, 106, 245, 0.07);
+      }
+      .nav-item .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--border2);
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .nav-item.done .dot {
+        background: var(--accent2);
+      }
+      .nav-item.active .dot {
+        background: var(--accent);
+      }
+
+      .main {
+        flex: 1;
+        padding: 40px 48px;
+        max-width: 860px;
+      }
+
+      /* Header */
+      .hero {
+        margin-bottom: 40px;
+      }
+      .hero-eyebrow {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 10px;
+      }
+      .hero h1 {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 12px;
+      }
+      .hero h1 span {
+        color: var(--accent);
+      }
+      .hero p {
+        color: var(--muted);
+        max-width: 560px;
+      }
+      .progress-wrap {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .progress-bar-outer {
+        flex: 1;
+        height: 4px;
+        background: var(--bg3);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .progress-bar-inner {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 2px;
+        transition: width 0.4s;
+      }
+      .progress-label {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      /* Section */
+      .section {
+        display: none;
+      }
+      .section.active {
+        display: block;
+      }
+      .section-header {
+        margin-bottom: 28px;
+      }
+      .section-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--tag-bg);
+        border: 1px solid var(--tag-border);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 4px;
+        margin-bottom: 12px;
+      }
+      .section h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .section-intro {
+        color: var(--muted);
+        max-width: 640px;
+      }
+
+      /* Topic cards */
+      .topic-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: border-color 0.2s;
+      }
+      .topic-card:hover {
+        border-color: var(--border2);
+      }
+      .topic-card.completed {
+        border-color: var(--done-border);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .card-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .card-icon.purple {
+        background: rgba(124, 106, 245, 0.15);
+      }
+      .card-icon.teal {
+        background: rgba(78, 201, 176, 0.12);
+      }
+      .card-icon.amber {
+        background: rgba(244, 160, 74, 0.12);
+      }
+      .card-icon.red {
+        background: rgba(232, 93, 106, 0.12);
+      }
+
+      .card-title {
+        font-weight: 600;
+        font-size: 15px;
+        flex: 1;
+      }
+      .card-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .card-toggle {
+        font-size: 18px;
+        color: var(--muted);
+        transition: transform 0.2s;
+        line-height: 1;
+      }
+      .card-toggle.open {
+        transform: rotate(180deg);
+      }
+      .card-check {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        font-size: 11px;
+        color: transparent;
+      }
+      .card-check.checked {
+        background: var(--accent2);
+        border-color: var(--accent2);
+        color: #0e0f11;
+      }
+
+      .card-body {
+        display: none;
+        padding: 0 20px 20px;
+      }
+      .card-body.open {
+        display: block;
+      }
+
+      /* Concept explanation */
+      .concept-text {
+        color: var(--text);
+        opacity: 0.85;
+        margin-bottom: 16px;
+        line-height: 1.7;
+      }
+
+      /* Example box */
+      .example-box {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 6px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+      .example-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+      pre {
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: #c8d0dc;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      /* Keywords + tips */
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .tag {
+        font-size: 11px;
+        padding: 3px 9px;
+        border-radius: 4px;
+        background: var(--tag-bg);
+        border: 1px solid var(--tag-border);
+        color: var(--accent);
+      }
+      .tip {
+        background: rgba(244, 160, 74, 0.07);
+        border: 1px solid rgba(244, 160, 74, 0.2);
+        border-radius: 6px;
+        padding: 10px 14px;
+        font-size: 13px;
+        color: #e8c98c;
+        margin-top: 12px;
+      }
+      .tip b {
+        color: var(--accent3);
+      }
+
+      /* Quiz */
+      .quiz-section {
+        margin-top: 20px;
+      }
+      .quiz-q {
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .quiz-opt {
+        padding: 9px 14px;
+        border-radius: 6px;
+        border: 1px solid var(--border2);
+        cursor: pointer;
+        font-size: 13.5px;
+        background: var(--bg3);
+        transition: all 0.15s;
+      }
+      .quiz-opt:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .quiz-opt.correct {
+        background: var(--done-bg);
+        border-color: var(--done-border);
+        color: var(--accent2);
+      }
+      .quiz-opt.wrong {
+        background: rgba(232, 93, 106, 0.08);
+        border-color: rgba(232, 93, 106, 0.3);
+        color: var(--accent4);
+      }
+      .quiz-feedback {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+        display: none;
+        padding: 8px 12px;
+        background: var(--bg3);
+        border-radius: 6px;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+
+      /* Divider */
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 20px 0;
+      }
+
+      /* Bottom nav */
+      .bottom-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 36px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+      }
+      .btn {
+        padding: 9px 20px;
+        border-radius: 7px;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        border: 1px solid var(--border2);
+        background: var(--bg3);
+        color: var(--text);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .btn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        opacity: 0.88;
+      }
+      .btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 700px) {
+        .sidebar {
+          display: none;
+        }
+        .main {
+          padding: 24px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="sidebar-title">Study Guide</div>
+        <div id="nav-items"></div>
+      </nav>
+
+      <!-- Main -->
+      <main class="main">
+        <!-- Hero -->
+        <div class="hero">
+          <div class="hero-eyebrow">AgentWay · Agentic AI</div>
+          <h1>Master <span>Agent Development</span></h1>
+          <p>
+            A comprehensive study guide covering all major topics — from core
+            concepts to production-ready multi-agent systems.
+          </p>
+          <div class="progress-wrap">
+            <div class="progress-bar-outer">
+              <div
+                class="progress-bar-inner"
+                id="prog-bar"
+                style="width: 0%"
+              ></div>
+            </div>
+            <div class="progress-label" id="prog-label">0 / 0 completed</div>
+          </div>
+        </div>
+
+        <!-- All sections injected by JS -->
+        <div id="sections-root"></div>
+
+        <div class="bottom-nav">
+          <button class="btn" id="btn-prev" onclick="navigate(-1)">
+            ← Previous
+          </button>
+          <span
+            id="page-indicator"
+            style="font-size: 13px; color: var(--muted)"
+          ></span>
+          <button class="btn primary" id="btn-next" onclick="navigate(1)">
+            Next →
+          </button>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const SECTIONS = [
+        {
+          id: "foundations",
+          label: "1. AI Agent Foundations",
+          badge: "Foundations",
+          icon: "🤖",
+          iconColor: "purple",
+          intro:
+            "Understand what an AI agent is, how it perceives and acts, and why it differs from a standard chatbot.",
+          topics: [
+            {
+              title: "What is an AI Agent?",
+              meta: "Core concept",
+              icon: "🧠",
+              iconColor: "purple",
+              body: `An AI agent is a system that perceives its environment, reasons about a goal, and takes actions to achieve it — autonomously, without step-by-step human instruction.
+
+Unlike a chatbot that simply responds to prompts, an agent plans, uses tools, adapts, and can loop through multiple steps until the goal is reached.`,
+              example: {
+                label: "Conceptual example",
+                code: `# Simple agent loop (pseudocode)
+goal = "Research the top 5 AI startups in 2025"
+
+while not goal_achieved:
+    thought = llm.think(goal, context)      # Reason
+    action  = llm.choose_tool(thought)      # Plan
+    result  = tools.run(action)             # Act
+    context.append(result)                  # Observe
+    goal_achieved = llm.check_done(context) # Evaluate`,
+              },
+              tags: ["ReAct loop", "Sense-Plan-Act", "Autonomy", "Tool use"],
+              tip: "Key distinction: a chatbot responds once; an agent runs a loop until the task is done.",
+              quiz: {
+                q: "What makes an AI agent different from a standard LLM chatbot?",
+                options: [
+                  "It uses a larger model",
+                  "It loops, plans, and takes actions until a goal is met",
+                  "It responds faster",
+                  "It requires no prompts",
+                ],
+                correct: 1,
+                feedback:
+                  "An agent runs an action-observe loop, uses tools, and adapts — unlike a one-shot chatbot response.",
+              },
+            },
+            {
+              title: "The ReAct Loop (Reason + Act)",
+              meta: "Core pattern",
+              icon: "🔄",
+              iconColor: "teal",
+              body: `ReAct (Reason + Act) is the foundational pattern for agent behavior. The agent alternates between:
+1. Thought — internal reasoning about what to do next
+2. Action — calling a tool or performing a step
+3. Observation — reading the result and updating context
+
+This loop continues until the agent concludes the task is complete.`,
+              example: {
+                label: "ReAct trace example",
+                code: `Thought: I need to find current AI funding data. I'll search the web.
+Action: web_search("AI startup funding 2025")
+Observation: ["Anthropic raised $4B", "OpenAI valued at $157B"...]
+
+Thought: I have data. Now I'll organize by funding amount.
+Action: python_repl(sort_and_format(data))
+Observation: Formatted table returned.
+
+Thought: Task complete. I'll compose the final answer.
+Final Answer: Here are the top 5 AI startups by funding in 2025...`,
+              },
+              tags: ["ReAct", "Thought-Action-Observation", "Chain-of-thought"],
+              tip: "Claude Code, LangChain agents, and OpenAI Assistants all implement variations of the ReAct loop internally.",
+              quiz: {
+                q: "In a ReAct loop, what comes AFTER the Thought step?",
+                options: [
+                  "Another Thought",
+                  "Final Answer",
+                  "Action",
+                  "User input",
+                ],
+                correct: 2,
+                feedback:
+                  "Thought → Action → Observation → Thought. The loop keeps going until the agent has enough information to answer.",
+              },
+            },
+            {
+              title: "Agent Components: Tools, Memory, Planning",
+              meta: "Architecture",
+              icon: "🔧",
+              iconColor: "amber",
+              body: `Every agent architecture has three pillars:
+
+• Tools — functions the agent can call (search, code exec, APIs, file I/O)
+• Memory — short-term (context window) and long-term (vector DB, files)
+• Planning — how it breaks goals into steps (sequential, hierarchical, or parallel)
+
+These three components combine to determine what an agent can do and how well it does it.`,
+              example: {
+                label: "Defining a tool in Python (OpenAI Agents SDK)",
+                code: `from agents import function_tool
+
+@function_tool
+def search_web(query: str) -> str:
+    """Search the web for up-to-date information."""
+    return brave_search(query)
+
+@function_tool
+def run_python(code: str) -> str:
+    """Execute Python code and return output."""
+    return sandbox.exec(code)
+
+agent = Agent(
+    name="Research Agent",
+    tools=[search_web, run_python],
+    instructions="You are a research agent. Use tools to answer questions."
+)`,
+              },
+              tags: ["Tools", "Memory", "Planning", "Context window"],
+              tip: "Tools are just functions with typed signatures and a docstring — the LLM reads the docstring to decide when to call it.",
+              quiz: {
+                q: "What is 'long-term memory' for an AI agent?",
+                options: [
+                  "The context window",
+                  "A larger model",
+                  "External storage like a vector database or files",
+                  "The system prompt",
+                ],
+                correct: 2,
+                feedback:
+                  "The context window is short-term (session-only). Long-term memory requires external storage that persists across sessions.",
+              },
+            },
+          ],
+        },
+        {
+          id: "claude-code",
+          label: "2. Claude Code",
+          badge: "Claude Code",
+          icon: "💻",
+          iconColor: "teal",
+          intro:
+            "Master Anthropic's AI coding agent — hooks, skills, MCP integration, and proven workflows.",
+          topics: [
+            {
+              title: "Claude Code Fundamentals",
+              meta: "Getting started",
+              icon: "⚡",
+              iconColor: "teal",
+              body: `Claude Code is Anthropic's agentic coding assistant. It runs in the terminal, has access to your entire codebase, and can read/write files, run commands, and search the web.
+
+Key features:
+• Full filesystem access within your project
+• Can run bash commands and tests
+• Maintains context across a session
+• Supports hooks for custom automation
+• Skills (SKILL.md files) for persistent, reusable instructions`,
+              example: {
+                label: "Basic Claude Code session",
+                code: `# Start Claude Code in your project directory
+$ cd my-project
+$ claude
+
+> Add error handling to all API calls in src/api/
+
+# Claude will:
+# 1. Read relevant files
+# 2. Plan the changes
+# 3. Edit files
+# 4. Run tests to verify
+# 5. Report what it changed`,
+              },
+              tags: [
+                "Terminal agent",
+                "File editing",
+                "Code generation",
+                "Test runner",
+              ],
+              tip: "Always open Claude Code from the root of your project — it uses the working directory to scope its context.",
+              quiz: {
+                q: "What makes Claude Code an 'agent' rather than just a code assistant?",
+                options: [
+                  "It's faster",
+                  "It can read, edit files, run commands, and loop until the task is done",
+                  "It only generates code",
+                  "It works without a terminal",
+                ],
+                correct: 1,
+                feedback:
+                  "Claude Code takes actions (file edits, bash commands), observes results, and iterates — the full agentic loop.",
+              },
+            },
+            {
+              title: "Hooks — Automating Claude Code Behavior",
+              meta: "Advanced feature",
+              icon: "🪝",
+              iconColor: "purple",
+              body: `Hooks let you run custom code at specific points in Claude Code's lifecycle:
+
+• PreToolUse — runs before Claude calls a tool
+• PostToolUse — runs after a tool call returns
+• Stop — runs when Claude finishes a task
+• Notification — runs on certain events
+
+Use hooks to: auto-format code, enforce policies, log activity, trigger CI/CD, or send notifications.`,
+              example: {
+                label:
+                  "claude_hooks.json — run prettier after every file write",
+                code: `{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --write $CLAUDE_TOOL_INPUT_PATH"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm test -- --silent"
+          }
+        ]
+      }
+    ]
+  }
+}`,
+              },
+              tags: [
+                "Hooks",
+                "Automation",
+                "PostToolUse",
+                "PreToolUse",
+                "Stop",
+              ],
+              tip: "Hooks are defined in claude_hooks.json at the project root. They run as shell commands, so you can call any script.",
+              quiz: {
+                q: "Which hook type runs automatically after every Claude Code session ends?",
+                options: ["PreToolUse", "PostToolUse", "Stop", "Init"],
+                correct: 2,
+                feedback:
+                  "The 'Stop' hook fires when Claude finishes a task — perfect for running tests or sending notifications.",
+              },
+            },
+            {
+              title: "Skills (SKILL.md) — Reusable Agent Instructions",
+              meta: "Customization",
+              icon: "📚",
+              iconColor: "amber",
+              body: `Skills are markdown files that teach Claude Code how to handle specific tasks in your project. Place a SKILL.md inside a folder and Claude will read it when it enters that folder.
+
+Skills are discoverable at session start and work across agents (Claude Code, GitHub Copilot, etc.). They encode your team's conventions, preferred libraries, and patterns.`,
+              example: {
+                label: "SKILL.md — defining a skill for API route creation",
+                code: `---
+name: create-api-route
+description: Use when creating new Express API routes
+---
+
+## Pattern
+Always use async/await with try-catch.
+Routes live in src/routes/<resource>.ts.
+Export a router, not individual handlers.
+
+## Template
+\`\`\`typescript
+import { Router, Request, Response } from 'express';
+const router = Router();
+
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    // implementation
+    res.json({ data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+export default router;
+\`\`\``,
+              },
+              tags: ["SKILL.md", "Skills", "Conventions", "Reusable"],
+              tip: "Put SKILL.md files in the directories they apply to — a skills/ in the root for global patterns, and subdirectory SKILL.md files for feature-specific guidance.",
+              quiz: {
+                q: "When does Claude Code discover SKILL.md files?",
+                options: [
+                  "Only when explicitly told to read them",
+                  "At session start, by scanning the project directory",
+                  "Only in the root folder",
+                  "When you type /skills",
+                ],
+                correct: 1,
+                feedback:
+                  "Skills are discovered at session start. Claude scans the directory structure and loads any SKILL.md files it finds.",
+              },
+            },
+            {
+              title: "MCP Integration in Claude Code",
+              meta: "Tooling",
+              icon: "🔌",
+              iconColor: "red",
+              body: `MCP (Model Context Protocol) lets Claude Code connect to external data sources and tools through a standardized interface. You configure MCP servers in .mcp.json and Claude Code automatically gains access to their tools.
+
+Common MCP servers: GitHub, Slack, Notion, databases, Figma, and custom internal tools.`,
+              example: {
+                label: ".mcp.json — connecting GitHub and a database",
+                code: `{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "\${GITHUB_TOKEN}" }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "\${DB_URL}"
+      }
+    }
+  }
+}`,
+              },
+              tags: [
+                "MCP",
+                "Model Context Protocol",
+                ".mcp.json",
+                "External tools",
+              ],
+              tip: "MCP servers run as local processes. Claude Code communicates with them over stdin/stdout using the MCP protocol.",
+              quiz: {
+                q: "Where do you configure MCP servers for Claude Code?",
+                options: [
+                  "SKILL.md",
+                  "claude_hooks.json",
+                  ".mcp.json",
+                  "package.json",
+                ],
+                correct: 2,
+                feedback:
+                  ".mcp.json in the project root (or home directory for global servers) is where you define MCP server connections.",
+              },
+            },
+          ],
+        },
+        {
+          id: "mcp",
+          label: "3. Model Context Protocol",
+          badge: "MCP",
+          icon: "🔌",
+          iconColor: "amber",
+          intro:
+            "Understand MCP — the open standard for connecting AI agents to external tools, data, and services.",
+          topics: [
+            {
+              title: "What is MCP?",
+              meta: "Protocol overview",
+              icon: "📡",
+              iconColor: "amber",
+              body: `MCP (Model Context Protocol) is an open standard by Anthropic that lets AI models connect to external data sources and tools through a consistent interface.
+
+Think of it like USB-C for AI: any MCP-compatible client (Claude, Claude Code, Cursor, etc.) can connect to any MCP server (GitHub, Slack, your database, etc.) without custom integrations.
+
+MCP servers expose three primitives:
+• Resources — data the agent can read (files, DB rows, API responses)
+• Tools — functions the agent can call
+• Prompts — pre-built prompt templates`,
+              example: {
+                label: "MCP architecture overview",
+                code: `# MCP Flow:
+
+Host (Claude Code / Claude Desktop)
+  └─ MCP Client
+       ├─ connects to → GitHub MCP Server
+       │     └─ tools: list_repos, create_issue, get_pr
+       ├─ connects to → Postgres MCP Server
+       │     └─ tools: query, list_tables
+       └─ connects to → Custom Internal Server
+             └─ tools: deploy, get_metrics, send_alert
+
+# The agent calls tools like any other function.
+# The MCP layer handles auth, serialization, etc.`,
+              },
+              tags: ["MCP", "Resources", "Tools", "Prompts", "Open standard"],
+              tip: "MCP uses JSON-RPC over stdio or HTTP/SSE. You can write an MCP server in any language — there are SDKs for Python, TypeScript, and more.",
+              quiz: {
+                q: "What are the three primitives exposed by an MCP server?",
+                options: [
+                  "Files, APIs, databases",
+                  "Resources, Tools, Prompts",
+                  "Inputs, Outputs, Errors",
+                  "Commands, Queries, Events",
+                ],
+                correct: 1,
+                feedback:
+                  "MCP servers expose Resources (data to read), Tools (functions to call), and Prompts (reusable prompt templates).",
+              },
+            },
+            {
+              title: "Building a Custom MCP Server",
+              meta: "Implementation",
+              icon: "🛠",
+              iconColor: "purple",
+              body: `You can build your own MCP server to expose any internal data or functionality to Claude. The TypeScript and Python SDKs make this straightforward.
+
+A server definition includes: server name, a list of tools (with JSON schema inputs), and a handler function that executes each tool.`,
+              example: {
+                label: "Simple MCP server in TypeScript",
+                code: `import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
+const server = new McpServer({ name: "my-company-tools", version: "1.0.0" });
+
+server.tool(
+  "get_customer",
+  "Fetch a customer record by ID from the CRM",
+  { customer_id: z.string().describe("The customer's UUID") },
+  async ({ customer_id }) => {
+    const customer = await crm.getCustomer(customer_id);
+    return {
+      content: [{ type: "text", text: JSON.stringify(customer) }]
+    };
+  }
+);
+
+server.tool(
+  "send_email",
+  "Send an email to a customer",
+  { to: z.string(), subject: z.string(), body: z.string() },
+  async ({ to, subject, body }) => {
+    await mailer.send({ to, subject, body });
+    return { content: [{ type: "text", text: "Email sent." }] };
+  }
+);`,
+              },
+              tags: [
+                "MCP server",
+                "TypeScript SDK",
+                "Zod schema",
+                "Custom tools",
+              ],
+              tip: "Use Zod for input validation — it doubles as the JSON schema that Claude uses to understand what arguments to pass.",
+              quiz: {
+                q: "What does Zod provide when building an MCP tool?",
+                options: [
+                  "Database connection",
+                  "Input validation AND the JSON schema Claude uses",
+                  "Authentication",
+                  "Logging",
+                ],
+                correct: 1,
+                feedback:
+                  "Zod schemas validate inputs at runtime AND automatically generate the JSON schema that Claude reads to understand how to call the tool.",
+              },
+            },
+          ],
+        },
+        {
+          id: "multi-agent",
+          label: "4. Multi-Agent Patterns",
+          badge: "Multi-Agent",
+          icon: "🕸",
+          iconColor: "teal",
+          intro:
+            "Design systems where multiple agents collaborate, delegate, and work in parallel to solve complex problems.",
+          topics: [
+            {
+              title: "Orchestrator + Subagent Pattern",
+              meta: "Core architecture",
+              icon: "🎼",
+              iconColor: "teal",
+              body: `The most common multi-agent pattern: one orchestrator agent breaks down a goal and delegates to specialized subagents.
+
+• Orchestrator — handles planning, task decomposition, and result synthesis
+• Subagents — each specialized for a specific domain (research, code, writing, data)
+
+The orchestrator doesn't do the work — it manages who does it.`,
+              example: {
+                label: "Orchestrator delegating to subagents",
+                code: `# Orchestrator agent
+orchestrator = Agent(
+    name="Project Manager",
+    instructions="""
+    You coordinate a team of agents:
+    - researcher: finds information online
+    - coder: writes and runs code
+    - writer: drafts reports and summaries
+    
+    Break tasks into subtasks and delegate.
+    Collect and synthesize results.
+    """,
+    tools=[
+        researcher.as_tool("research a topic"),
+        coder.as_tool("write and run code"),
+        writer.as_tool("draft a section of a report")
+    ]
+)
+
+result = await orchestrator.run(
+    "Create a competitive analysis report on AI coding tools"
+)`,
+              },
+              tags: [
+                "Orchestrator",
+                "Subagent",
+                "Delegation",
+                "Task decomposition",
+              ],
+              tip: "Each subagent should have a narrow, well-defined responsibility. Generalist subagents are harder to reason about and debug.",
+              quiz: {
+                q: "In the orchestrator pattern, what is the orchestrator's primary job?",
+                options: [
+                  "Do all the work itself",
+                  "Plan, delegate, and synthesize — not execute",
+                  "Connect to APIs",
+                  "Write code",
+                ],
+                correct: 1,
+                feedback:
+                  "The orchestrator manages the workflow. It decomposes tasks and delegates to specialist subagents, then combines their outputs.",
+              },
+            },
+            {
+              title: "Parallel Agent Execution",
+              meta: "Performance pattern",
+              icon: "⚡",
+              iconColor: "amber",
+              body: `Instead of running tasks sequentially, you can run multiple agents in parallel — dramatically reducing wall-clock time for research-heavy or multi-step tasks.
+
+In Python, use asyncio.gather(). In TypeScript, use Promise.all(). The orchestrator fans out work, waits for all results, then synthesizes.`,
+              example: {
+                label: "Parallel research with asyncio",
+                code: `import asyncio
+
+async def research_company(company: str) -> dict:
+    agent = Agent(name=f"Researcher-{company}", tools=[web_search])
+    return await agent.run(f"Research {company}: funding, products, team size")
+
+async def competitive_analysis(companies: list[str]):
+    # Run all research in parallel — not one by one
+    results = await asyncio.gather(
+        *[research_company(c) for c in companies]
+    )
+    
+    # Synthesize after all complete
+    synthesizer = Agent(name="Analyst")
+    return await synthesizer.run(
+        f"Compare these companies: {results}"
+    )
+
+# 5 companies researched in parallel, not 5× slower
+await competitive_analysis(["Anthropic", "OpenAI", "Mistral", "Cohere", "Inflection"])`,
+              },
+              tags: [
+                "Parallel",
+                "asyncio",
+                "Promise.all",
+                "Fan-out",
+                "Throughput",
+              ],
+              tip: "Parallel agents are ideal when tasks are independent. If Task B depends on Task A's output, they must be sequential.",
+              quiz: {
+                q: "When should you NOT run agents in parallel?",
+                options: [
+                  "When tasks are fast",
+                  "When tasks are independent",
+                  "When Task B needs Task A's output",
+                  "When you have many tasks",
+                ],
+                correct: 2,
+                feedback:
+                  "Parallel execution only works for independent tasks. Dependencies create ordering requirements — those tasks must be sequential.",
+              },
+            },
+            {
+              title: "Handoffs Between Agents",
+              meta: "Control flow",
+              icon: "🤝",
+              iconColor: "purple",
+              body: `A handoff transfers full control from one agent to another. Unlike calling a subagent as a tool (which returns a result), a handoff passes the entire conversation context and lets the receiving agent take over.
+
+Use handoffs for: routing to specialist agents, escalation, domain switching.`,
+              example: {
+                label: "Triage agent handing off to a specialist",
+                code: `from agents import Agent, handoff
+
+billing_agent = Agent(
+    name="Billing Specialist",
+    instructions="Handle all billing questions and refunds."
+)
+
+technical_agent = Agent(
+    name="Tech Support",
+    instructions="Debug technical issues, check system status."
+)
+
+triage_agent = Agent(
+    name="Triage",
+    instructions="""
+    Classify the user's request and hand off:
+    - billing questions → billing_agent
+    - technical issues → technical_agent
+    """,
+    handoffs=[billing_agent, technical_agent]
+)
+
+# User message: "My payment failed and now I can't log in"
+# Triage routes to billing first, then back out.`,
+              },
+              tags: [
+                "Handoff",
+                "Routing",
+                "Specialist",
+                "Triage",
+                "Control flow",
+              ],
+              tip: "Handoffs vs. tools: tools return to the caller. Handoffs give full control to the next agent. Use tools for subtasks, handoffs for domain switching.",
+              quiz: {
+                q: "What's the key difference between a handoff and calling an agent as a tool?",
+                options: [
+                  "Speed",
+                  "Handoffs transfer full conversation control; tools return a result to the caller",
+                  "Tools are faster",
+                  "There is no difference",
+                ],
+                correct: 1,
+                feedback:
+                  "A tool call returns output to the calling agent. A handoff transfers full control — the new agent takes over the conversation.",
+              },
+            },
+            {
+              title: "Supervisor Pattern",
+              meta: "Architecture",
+              icon: "👁",
+              iconColor: "red",
+              body: `The Supervisor Pattern is a hierarchical multi-agent system where a central supervisor assigns work, evaluates output, and decides whether to loop or stop.
+
+Used by: Anthropic's Multi-Agent Research System, AutoGPT-style systems, and enterprise workflow agents.
+
+The supervisor holds the plan and quality bar; workers are stateless executors.`,
+              example: {
+                label: "Supervisor with quality gate",
+                code: `async def supervisor_loop(goal: str, max_rounds: int = 5):
+    plan = await planner.run(f"Create a step-by-step plan for: {goal}")
+    results = []
+    
+    for step in plan.steps:
+        # Assign to best worker
+        worker = select_worker(step)
+        output = await worker.run(step.description)
+        
+        # Quality gate — retry if needed
+        quality = await evaluator.run(
+            f"Does this output satisfy '{step.success_criteria}'?\n{output}"
+        )
+        
+        if not quality.passed:
+            output = await worker.run(step.description + "\nPrevious attempt failed: " + quality.feedback)
+        
+        results.append(output)
+    
+    return await synthesizer.run(f"Combine: {results}")`,
+              },
+              tags: [
+                "Supervisor",
+                "Quality gate",
+                "Hierarchical",
+                "Evaluate-retry",
+              ],
+              tip: "A quality gate (evaluator agent) between worker output and the final result dramatically improves reliability.",
+              quiz: {
+                q: "What role does the 'evaluator' play in a Supervisor pattern?",
+                options: [
+                  "It routes tasks",
+                  "It checks if worker output meets the quality standard",
+                  "It generates the plan",
+                  "It handles user input",
+                ],
+                correct: 1,
+                feedback:
+                  "The evaluator is the quality gate — it checks whether the worker's output meets the success criteria, enabling retry loops.",
+              },
+            },
+          ],
+        },
+        {
+          id: "memory",
+          label: "5. Agent Memory & RAG",
+          badge: "Memory",
+          icon: "🧠",
+          iconColor: "purple",
+          intro:
+            "Give agents persistent memory using vector databases, embeddings, and Retrieval-Augmented Generation.",
+          topics: [
+            {
+              title: "Types of Agent Memory",
+              meta: "Memory architecture",
+              icon: "💾",
+              iconColor: "purple",
+              body: `Agents have four types of memory:
+
+1. In-context (working) — the current conversation window. Fast, but limited and ephemeral.
+2. External (long-term) — vector DBs, files, SQL. Persists across sessions.
+3. Episodic — stored records of past interactions, used to recall "what happened before"
+4. Semantic — factual knowledge stored as embeddings, retrieved by similarity
+
+Most production agents combine in-context for the active task + external storage for long-term recall.`,
+              example: {
+                label: "Episodic memory: storing and recalling past sessions",
+                code: `from qdrant_client import QdrantClient
+import openai
+
+client = QdrantClient(":memory:")
+
+def store_memory(session_id: str, content: str):
+    embedding = openai.embeddings.create(
+        input=content, model="text-embedding-3-small"
+    ).data[0].embedding
+    
+    client.upsert("agent_memory", points=[{
+        "id": session_id,
+        "vector": embedding,
+        "payload": {"content": content, "timestamp": now()}
+    }])
+
+def recall_memory(query: str, top_k: int = 3) -> list[str]:
+    embedding = openai.embeddings.create(
+        input=query, model="text-embedding-3-small"
+    ).data[0].embedding
+    
+    hits = client.search("agent_memory", embedding, limit=top_k)
+    return [h.payload["content"] for h in hits]`,
+              },
+              tags: [
+                "In-context memory",
+                "Vector DB",
+                "Episodic",
+                "Semantic",
+                "Embeddings",
+              ],
+              tip: "Always include retrieved memories in the system prompt so the agent has context before reading the user's message.",
+              quiz: {
+                q: "Which memory type persists across multiple agent sessions?",
+                options: [
+                  "In-context memory",
+                  "The context window",
+                  "External vector database",
+                  "The system prompt",
+                ],
+                correct: 2,
+                feedback:
+                  "Only external storage (vector DBs, files, SQL) persists across sessions. The context window is cleared each time.",
+              },
+            },
+            {
+              title: "RAG — Retrieval-Augmented Generation",
+              meta: "Core technique",
+              icon: "🔍",
+              iconColor: "teal",
+              body: `RAG gives an agent access to a large knowledge base without fitting it all in the context window. The pipeline:
+
+1. Index — chunk documents, embed each chunk, store in a vector DB
+2. Retrieve — embed the user's query, find the most similar chunks
+3. Augment — inject the retrieved chunks into the prompt
+4. Generate — the LLM answers using both its training and the retrieved context`,
+              example: {
+                label: "Full RAG pipeline",
+                code: `# 1. INDEX (run once, or on document updates)
+chunks = split_documents(my_docs, chunk_size=512, overlap=50)
+for chunk in chunks:
+    embedding = embed(chunk.text)
+    vector_db.insert(embedding, metadata={"text": chunk.text, "source": chunk.source})
+
+# 2. QUERY TIME
+user_question = "What's our refund policy for enterprise customers?"
+
+# Retrieve
+query_embedding = embed(user_question)
+relevant_chunks = vector_db.search(query_embedding, top_k=5)
+
+# 3. AUGMENT + 4. GENERATE
+context = "\n\n".join([c["text"] for c in relevant_chunks])
+response = llm.chat([
+    {"role": "system", "content": f"Use this context to answer:\n{context}"},
+    {"role": "user",   "content": user_question}
+])`,
+              },
+              tags: ["RAG", "Embeddings", "Vector DB", "Retrieval", "Chunking"],
+              tip: "Chunk size matters a lot. Too small → no context. Too large → irrelevant text crowds out the useful bits. 256–512 tokens is a good starting point.",
+              quiz: {
+                q: "In a RAG pipeline, when does the embedding of the USER'S QUERY happen?",
+                options: [
+                  "During indexing",
+                  "At query time, just before retrieval",
+                  "After generation",
+                  "Never — queries are not embedded",
+                ],
+                correct: 1,
+                feedback:
+                  "At query time, you embed the user's question and find the most similar chunks using cosine similarity.",
+              },
+            },
+          ],
+        },
+        {
+          id: "production",
+          label: "6. Production & Safety",
+          badge: "Production",
+          icon: "🚀",
+          iconColor: "red",
+          intro:
+            "Deploy agents reliably — guardrails, observability, human-in-the-loop, and safe tool use.",
+          topics: [
+            {
+              title: "Guardrails & Input/Output Validation",
+              meta: "Safety",
+              icon: "🛡",
+              iconColor: "red",
+              body: `Production agents need guardrails to prevent harmful actions and ensure output quality.
+
+• Input guardrails — validate the user's request before the agent acts (detect jailbreaks, off-topic requests, PII)
+• Output guardrails — check the agent's response before it's sent (detect hallucinations, policy violations, sensitive data)
+
+Guardrails are themselves LLM calls that run in parallel or sequence with the main agent.`,
+              example: {
+                label: "Input + output guardrail in OpenAI Agents SDK",
+                code: `from pydantic import BaseModel
+from agents import input_guardrail, output_guardrail, GuardrailFunctionOutput
+
+class IsSafe(BaseModel):
+    safe: bool
+    reason: str
+
+@input_guardrail
+async def safety_check(ctx, agent, input):
+    result = await guardrail_llm.run(
+        f"Is this input safe and on-topic for a customer service bot? {input}"
+    ).final_output_as(IsSafe)
+    return GuardrailFunctionOutput(
+        output_info=result,
+        tripwire_triggered=not result.safe
+    )
+
+@output_guardrail
+async def no_pii(ctx, agent, output):
+    contains_pii = detect_pii(output)  # your PII scanner
+    return GuardrailFunctionOutput(
+        output_info=output,
+        tripwire_triggered=contains_pii
+    )
+
+agent = Agent(
+    name="Customer Service",
+    input_guardrails=[safety_check],
+    output_guardrails=[no_pii]
+)`,
+              },
+              tags: [
+                "Guardrails",
+                "Input validation",
+                "Output validation",
+                "PII",
+                "Safety",
+              ],
+              tip: "Run input guardrails in parallel with the main agent (not before) to reduce latency. Raise an error only if the guardrail fires.",
+              quiz: {
+                q: "What does 'tripwire_triggered=True' mean in an agent guardrail?",
+                options: [
+                  "The agent succeeded",
+                  "The guardrail detected a problem and should halt processing",
+                  "The agent is running",
+                  "Debug mode is on",
+                ],
+                correct: 1,
+                feedback:
+                  "When tripwire_triggered is True, the guardrail fires — processing stops and the exception is raised instead of returning the result.",
+              },
+            },
+            {
+              title: "Human-in-the-Loop (HITL)",
+              meta: "Safety pattern",
+              icon: "👤",
+              iconColor: "amber",
+              body: `For high-stakes actions (sending emails, executing trades, deleting data), agents should pause and ask for human approval before proceeding.
+
+HITL patterns:
+• Approve/deny — human reviews and clicks yes/no
+• Audit trail — all agent actions are logged for review
+• Confidence threshold — agent self-reports uncertainty and asks for help when below a threshold`,
+              example: {
+                label: "HITL approval before a destructive action",
+                code: `async def delete_customer_data(customer_id: str, agent_run_id: str):
+    # Pause and notify human reviewer
+    approval_request = {
+        "action": "delete_customer_data",
+        "customer_id": customer_id,
+        "agent_run_id": agent_run_id,
+        "requested_at": now()
+    }
+    
+    # Send to approval queue (Slack, email, dashboard...)
+    await slack.send(f"⚠️ Agent {agent_run_id} wants to delete customer {customer_id}. Approve? /approve {agent_run_id}")
+    
+    # Wait for human decision (poll or webhook)
+    approved = await wait_for_approval(agent_run_id, timeout=300)
+    
+    if not approved:
+        raise PermissionDenied("Action rejected by reviewer")
+    
+    # Proceed only after explicit approval
+    await db.delete_customer(customer_id)
+    audit_log(agent_run_id, "delete_customer_data", customer_id, "approved")`,
+              },
+              tags: [
+                "HITL",
+                "Human approval",
+                "Audit trail",
+                "Confidence threshold",
+              ],
+              tip: "Design HITL as an interrupt, not a blocking call. Use async queues or webhooks so the human can approve from Slack, email, or a dashboard.",
+              quiz: {
+                q: "When is HITL (Human-in-the-Loop) most important?",
+                options: [
+                  "For read-only queries",
+                  "For irreversible or high-stakes actions",
+                  "When the agent is fast",
+                  "Always, for every action",
+                ],
+                correct: 1,
+                feedback:
+                  "HITL is essential for irreversible actions — deletes, financial transactions, emails to customers. Read-only operations usually don't need it.",
+              },
+            },
+            {
+              title: "Observability & Tracing",
+              meta: "Production ops",
+              icon: "📊",
+              iconColor: "teal",
+              body: `Agents are harder to debug than regular software because the execution path is non-deterministic. Good observability means logging every:
+
+• LLM call (prompt, response, token count, latency)
+• Tool call (name, inputs, output, duration)
+• Agent decision (which tool was chosen, why)
+• Error (with full stack trace and context)
+
+Tools: LangSmith, AgentOps, Arize Phoenix, Langfuse, or custom OpenTelemetry traces.`,
+              example: {
+                label: "Tracing with OpenTelemetry (Langfuse-compatible)",
+                code: `from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+
+tracer = trace.get_tracer("my-agent")
+
+async def run_agent_with_tracing(user_input: str):
+    with tracer.start_as_current_span("agent.run") as span:
+        span.set_attribute("user.input", user_input)
+        
+        with tracer.start_as_current_span("llm.call") as llm_span:
+            response = await llm.chat(user_input)
+            llm_span.set_attribute("tokens.used", response.usage.total_tokens)
+            llm_span.set_attribute("model", response.model)
+        
+        with tracer.start_as_current_span("tool.call") as tool_span:
+            tool_span.set_attribute("tool.name", response.tool_call.name)
+            result = await tools.run(response.tool_call)
+            tool_span.set_attribute("tool.success", True)
+        
+        span.set_attribute("agent.steps", 2)
+        return result`,
+              },
+              tags: [
+                "Observability",
+                "Tracing",
+                "OpenTelemetry",
+                "LangSmith",
+                "Debugging",
+              ],
+              tip: "Assign a unique run_id to every agent session. Log it everywhere so you can reconstruct the full execution trace when debugging.",
+              quiz: {
+                q: "Why is observability especially important for agents compared to regular APIs?",
+                options: [
+                  "Agents use more memory",
+                  "Agent execution paths are non-deterministic — you can't predict which tools will be called",
+                  "APIs are cheaper",
+                  "Agents are slower",
+                ],
+                correct: 1,
+                feedback:
+                  "Agents choose their own execution path at runtime. Without tracing, debugging a failure is nearly impossible — you can't reason about what happened.",
+              },
+            },
+          ],
+        },
+      ];
+
+      // ---- State ----
+      var currentSection = 0;
+      var completed = new Set();
+
+      function saveCompleted() {
+        // in-memory only (localStorage not available in this environment)
+      }
+
+      // ---- Render nav ----
+      function renderNav() {
+        const nav = document.getElementById("nav-items");
+        nav.innerHTML = SECTIONS.map(
+          (s, i) => `
+    <div class="nav-item ${i === currentSection ? "active" : ""} ${isSectionDone(i) ? "done" : ""}"
+         onclick="goToSection(${i})">
+      <div class="dot"></div>
+      ${s.label}
+    </div>
+  `,
+        ).join("");
+      }
+
+      function isSectionDone(si) {
+        return SECTIONS[si].topics.every((_, ti) =>
+          completed.has(`${si}-${ti}`),
+        );
+      }
+
+      // ---- Render progress ----
+      function renderProgress() {
+        const total = SECTIONS.reduce((a, s) => a + s.topics.length, 0);
+        const done = [...completed].length;
+        document.getElementById("prog-bar").style.width =
+          (done / total) * 100 + "%";
+        document.getElementById("prog-label").textContent =
+          `${done} / ${total} completed`;
+      }
+
+      // ---- Render sections ----
+      function renderSections() {
+        const root = document.getElementById("sections-root");
+        root.innerHTML = SECTIONS.map(
+          (s, si) => `
+    <div class="section ${si === currentSection ? "active" : ""}" id="section-${si}">
+      <div class="section-header">
+        <div class="section-badge">${s.badge}</div>
+        <h2>${s.label}</h2>
+        <p class="section-intro">${s.intro}</p>
+      </div>
+      ${s.topics.map((t, ti) => renderCard(t, si, ti)).join("")}
+    </div>
+  `,
+        ).join("");
+      }
+
+      function renderCard(t, si, ti) {
+        const id = `${si}-${ti}`;
+        const isDone = completed.has(id);
+        return `
+    <div class="topic-card ${isDone ? "completed" : ""}" id="card-${id}">
+      <div class="card-header" onclick="toggleCard('${id}')">
+        <div class="card-icon ${t.iconColor}">${t.icon}</div>
+        <div style="flex:1">
+          <div class="card-title">${t.title}</div>
+          <div class="card-meta">${t.meta}</div>
+        </div>
+        <div class="card-check ${isDone ? "checked" : ""}" id="check-${id}"
+             onclick="event.stopPropagation(); markDone('${id}')" title="Mark complete">
+          ${isDone ? "✓" : ""}
+        </div>
+        <div class="card-toggle" id="toggle-${id}">▾</div>
+      </div>
+      <div class="card-body" id="body-${id}">
+        <p class="concept-text">${t.body.replace(/\n/g, "<br>")}</p>
+        <div class="example-box">
+          <div class="example-label">${t.example.label}</div>
+          <pre>${escHtml(t.example.code)}</pre>
+        </div>
+        <div class="tags">${t.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+        <div class="tip"><b>💡 Pro tip:</b> ${t.tip}</div>
+        <div class="divider"></div>
+        <div class="quiz-section">
+          <div class="quiz-q">🎯 Quick check: ${t.quiz.q}</div>
+          <div class="quiz-options" id="quiz-${id}">
+            ${t.quiz.options
+              .map(
+                (o, oi) => `
+              <div class="quiz-opt" onclick="answerQuiz('${id}', ${oi}, ${t.quiz.correct})">${o}</div>
+            `,
+              )
+              .join("")}
+          </div>
+          <div class="quiz-feedback" id="qfb-${id}"></div>
+        </div>
+      </div>
+    </div>`;
+      }
+
+      function escHtml(s) {
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      // ---- Interactions ----
+      function toggleCard(id) {
+        const body = document.getElementById("body-" + id);
+        const tog = document.getElementById("toggle-" + id);
+        const isOpen = body.classList.contains("open");
+        body.classList.toggle("open", !isOpen);
+        tog.classList.toggle("open", !isOpen);
+      }
+
+      function markDone(id) {
+        if (completed.has(id)) {
+          completed.delete(id);
+        } else {
+          completed.add(id);
+          // Auto-open the card
+          const body = document.getElementById("body-" + id);
+          if (!body.classList.contains("open")) toggleCard(id);
+        }
+        saveCompleted();
+        // Update check button
+        const check = document.getElementById("check-" + id);
+        const isDone = completed.has(id);
+        check.className = "card-check" + (isDone ? " checked" : "");
+        check.textContent = isDone ? "✓" : "";
+        // Update card border
+        document.getElementById("card-" + id).className =
+          "topic-card" + (isDone ? " completed" : "");
+        renderProgress();
+        renderNav();
+      }
+
+      function answerQuiz(id, chosen, correct) {
+        const opts = document.querySelectorAll(`#quiz-${id} .quiz-opt`);
+        opts.forEach((o, i) => {
+          o.classList.remove("correct", "wrong");
+          if (i === correct) o.classList.add("correct");
+          else if (i === chosen && chosen !== correct) o.classList.add("wrong");
+          o.style.pointerEvents = "none";
+        });
+        const fb = document.getElementById("qfb-" + id);
+        const [si, ti] = id.split("-").map(Number);
+        fb.textContent =
+          (chosen === correct ? "✓ Correct! " : "✗ Not quite. ") +
+          SECTIONS[si].topics[ti].quiz.feedback;
+        fb.classList.add("show");
+        if (chosen === correct) markDone(id);
+      }
+
+      function goToSection(i) {
+        currentSection = i;
+        renderNav();
+        renderSections();
+        renderPageIndicator();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function navigate(dir) {
+        const next = currentSection + dir;
+        if (next >= 0 && next < SECTIONS.length) goToSection(next);
+      }
+
+      function renderPageIndicator() {
+        document.getElementById("page-indicator").textContent =
+          `Section ${currentSection + 1} of ${SECTIONS.length}`;
+        document.getElementById("btn-prev").disabled = currentSection === 0;
+        document.getElementById("btn-next").disabled =
+          currentSection === SECTIONS.length - 1;
+      }
+
+      // ---- Init ----
+      function init() {
+        renderNav();
+        renderSections();
+        renderProgress();
+        renderPageIndicator();
+      }
+
+      init();
+    </script>
+  </body>
+</html>

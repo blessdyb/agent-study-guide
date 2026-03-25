@@ -64,4 +64,11 @@ You can then use the generated content for review, note-taking, or exam preparat
 
 ---
 
-# 📦 Project Structure (Example)
+# 🧩 Potential Future Features
+
+- Flashcard generation (Anki export)
+- Concept maps
+- Spaced repetition support
+- PDF upload
+- YouTube lecture summarization
+- AI tutor / Q&A mode
